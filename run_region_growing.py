@@ -2,7 +2,7 @@ import numpy as np
 import pyximport
 from numpy.testing import assert_array_equal
 
-pyximport.install()
+pyximport.install(setup_args={'include_dirs': np.get_include()})
 from PIL import Image
 
 from region_growing import grow_region
