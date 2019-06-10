@@ -1,5 +1,6 @@
 import numpy as np
 import pyximport
+from numpy.testing import assert_array_equal
 
 pyximport.install()
 from PIL import Image
@@ -14,12 +15,6 @@ if __name__ == "__main__":
     image_np = np.array(image)
     seeds = [(200, 200)]
 
-    with timer("warmup"):
-        grown_image_up = grow_region(image_np, seeds, threshold=0, up=True, down=False)
-        grown_image_down = grow_region(
-            image_np, seeds, threshold=0, up=False, down=True
-        )
-
     with timer("region growing"):
         for _ in range(4):
             grown_image_up = grow_region(
@@ -29,21 +24,16 @@ if __name__ == "__main__":
                 image_np, seeds, threshold=0, up=False, down=True
             )
 
-    with timer("warmup"):
-        grown_image_up = grow_region_cython(
-            image_np, seeds, threshold=0, up=True, down=False
-        )
-        grown_image_down = grow_region_cython(
-            image_np, seeds, threshold=0, up=False, down=True
-        )
-
     with timer("region growing cython"):
         for _ in range(4):
-            grown_image_up = grow_region_cython(
+            grown_image_up_cython = grow_region_cython(
                 image_np, seeds, threshold=0, up=True, down=False
             )
-            grown_image_down = grow_region_cython(
+            grown_image_down_cython = grow_region_cython(
                 image_np, seeds, threshold=0, up=False, down=True
             )
+
+    assert_array_equal(grown_image_up, grown_image_up_cython)
+    assert_array_equal(grown_image_down, grown_image_down_cython)
 
     Image.fromarray(grown_image_down).save("example_grown.png")
