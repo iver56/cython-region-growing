@@ -3,7 +3,7 @@ from collections import deque
 import numpy as np
 cimport numpy as np
 
-def grow_region_cython(np.ndarray[np.uint8_t, ndim=2] img, seeds, threshold=65, up=True, down=True):
+def grow_region_cython(np.ndarray[np.uint8_t, ndim=2] img, seeds, int threshold=65, bint up=True, bint down=True):
     """
     Find a region of connected pixels. The pixel values are assumed to be between 0 and 255
     https://en.wikipedia.org/wiki/Region_growing
